@@ -27,6 +27,11 @@ const KanbanPage = () => {
       setTasks(tasks);
     });
 
+    // add tasks to the task list
+    newSocket.on("task-added", (task: TaskType) => {
+      setTasks((state) => [...state, task]);
+    });
+
     return () => {
       newSocket.disconnect();
     };
@@ -36,7 +41,7 @@ const KanbanPage = () => {
 
   const handleAddTask = (task: TaskType) => {
     if (socket) {
-      socket.emit("add-task", task);
+      socket.emit("add-task", { ...task, status: "todo" });
     }
   };
 

@@ -22,17 +22,17 @@ const pool = new Pool({
   port: 5432,
 });
 
-const data = [
-  { id: 1, title: "Cooking", description: "Cooking food", status: "todo" },
+let data = [
+  { id: "1", title: "Cooking", description: "Cooking food", status: "todo" },
   {
-    id: 2,
+    id: "2",
     title: "Iron",
     description: "Iron all office clothes",
     status: "in-progress",
   },
-  { id: 3, title: "Clean", description: "Clean room", status: "completed" },
+  { id: "3", title: "Clean", description: "Clean room", status: "completed" },
   {
-    id: 4,
+    id: "4",
     title: "Office",
     description: "Complete office work",
     status: "todo",
@@ -48,7 +48,10 @@ io.on("connection", (socket) => {
   });
 
   // Add a new task
-  socket.on("add-task", async () => {});
+  socket.on("add-task", async (task) => {
+    data = [...data, task];
+    io.emit("task-added", task);
+  });
 
   // Update a task
   socket.on("update-task", async () => {});

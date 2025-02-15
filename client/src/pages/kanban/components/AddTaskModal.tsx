@@ -20,13 +20,15 @@ const AddTaskModal = ({ handleAddTask }: AddTaskModalProps) => {
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { id: name, value } = e.target;
+
     setFormData((state) => ({ ...state, [name]: value }));
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleAddTask({ id: Date.now().toString(), ...formData } as TaskType);
+    handleModalChange();
   };
   /**
    * TSX
@@ -53,6 +55,7 @@ const AddTaskModal = ({ handleAddTask }: AddTaskModalProps) => {
                   {label}
                 </label>
                 <input
+                  id={id}
                   type={type}
                   value={formData[id] ?? ""}
                   placeholder={placeholder}
