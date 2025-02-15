@@ -5,7 +5,7 @@ function App() {
    * TSX
    */
   return (
-    <div className="text-red-200">
+    <div>
       <div></div>
       <Routers />
     </div>
