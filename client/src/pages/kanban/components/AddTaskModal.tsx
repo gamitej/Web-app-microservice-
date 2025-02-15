@@ -4,6 +4,8 @@ import BasicModal from "@/components/model";
 // type & data
 import { TaskType } from "../type";
 import { defaultFormData, taskFormData } from "../data";
+import SimpleDropdown from "@/components/fields/SimpleDropdown";
+import { OptionsType } from "@/data/type";
 
 interface AddTaskModalProps {
   handleAddTask: (task: TaskType) => void;
@@ -23,6 +25,16 @@ const AddTaskModal = ({ handleAddTask }: AddTaskModalProps) => {
     const { id: name, value } = e.target;
 
     setFormData((state) => ({ ...state, [name]: value }));
+  };
+
+  const handleDropdownChange = ({
+    id,
+    value,
+  }: {
+    id: string;
+    value: string;
+  }) => {
+    setFormData((state) => ({ ...state, [id]: value }));
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -48,22 +60,38 @@ const AddTaskModal = ({ handleAddTask }: AddTaskModalProps) => {
             onSubmit={handleSubmit}
             className="w-[90%] m-auto h-full flex flex-col justify-between py-4"
           >
-            {taskFormData.map(({ id, label, placeholder, type }) => (
-              <div key={id} className="flex flex-col gap-2">
-                {" "}
-                <label htmlFor="" className="text-xl text-gray-600">
-                  {label}
-                </label>
-                <input
-                  id={id}
-                  type={type}
-                  value={formData[id] ?? ""}
-                  placeholder={placeholder}
-                  onChange={handleInputChange}
-                  className="px-4 py-2 bg-gray-100 text-xl rounded-md focus:outline-gray-400"
-                />
-              </div>
-            ))}
+            {taskFormData.map(({ id, label, placeholder, type, options }) => {
+              if (type === "dropdown")
+                return (
+                  <SimpleDropdown
+                    key={id}
+                    selectedValue={
+                      { label: "", value: formData[id] } as OptionsType
+                    }
+                    options={options ?? []}
+                    onSelect={({ value }) =>
+                      handleDropdownChange({ id, value })
+                    }
+                  />
+                );
+
+              return (
+                <div key={id} className="flex flex-col gap-2">
+                  <label htmlFor="" className="text-xl text-gray-600">
+                    {label}
+                  </label>
+                  <input
+                    required
+                    id={id}
+                    type={type}
+                    value={formData[id] ?? ""}
+                    placeholder={placeholder}
+                    onChange={handleInputChange}
+                    className="px-4 py-2 bg-gray-100 text-xl rounded-md focus:outline-gray-400"
+                  />
+                </div>
+              );
+            })}
 
             <button
               type="submit"

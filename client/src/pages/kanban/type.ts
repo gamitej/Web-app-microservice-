@@ -1,3 +1,5 @@
+import { OptionsType } from "@/data/type";
+
 export type ColumnsType = { label: string; value: string };
 
 export interface TaskType {
@@ -11,5 +13,6 @@ export type TaskFormDataType = {
   id: string;
   type: string;
   label: string;
-  placeholder: string;
+  placeholder?: string;
+  options?: OptionsType[];
 };
