@@ -16,18 +16,26 @@ const KanbanPage = () => {
   const [socket, setSocket] = useState<typeof Socket | null>(null);
 
   useEffect(() => {
-    const newSocket = io(`${apiGateWayUrl}/kanban`);
+    // const newSocket = io(`${apiGateWayUrl}/kanban`);
+    const newSocket = io(`http://localhost:8000`, {
+      path: "/kanban/socket.io",
+    });
+
     setSocket(newSocket);
 
     // Fetch initial tasks data
     newSocket.emit("fetch-tasks");
+
+    return () => {
+      newSocket.disconnect();
+    };
   }, []);
 
   /**
    * TSX
    */
   return (
-    <div className="w-full p-6 flex flex-col gap-4 justify-center items-center">
+    <div className="w-full p-6 flex flex-col gap-6 justify-center items-center">
       <h2 className="text-xl font-bold text-gray-600 text-center uppercase">
         Kanban Board
       </h2>
