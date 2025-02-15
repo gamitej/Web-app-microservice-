@@ -1,15 +1,12 @@
 import io, { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
+// components
+import AddTaskModal from "./components/AddTaskModal";
 // services
 import { apiGateWayUrl } from "@/apiServices/apiServer";
-import { ColumnsType, kanbanStatusColumns } from "./data";
-
-interface TaskType {
-  id: number;
-  title: string;
-  status: string;
-  description: string;
-}
+// data
+import { kanbanStatusColumns } from "./data";
+import { ColumnsType, TaskType } from "./type";
 
 const KanbanPage = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -35,6 +32,14 @@ const KanbanPage = () => {
     };
   }, []);
 
+  // =================== EVENT HANDLER'S ====================
+
+  const handleAddTask = (task: TaskType) => {
+    if (socket) {
+      socket.emit("add-task", task);
+    }
+  };
+
   /**
    * TSX
    */
@@ -44,9 +49,7 @@ const KanbanPage = () => {
         <h2 className="text-xl font-bold text-gray-600 uppercase">
           Kanban Board
         </h2>
-        <button className="rounded-md px-4 py-1 shadow bg-gray-600 text-white hover:bg-gray-500">
-          Add
-        </button>
+        <AddTaskModal handleAddTask={handleAddTask} />
       </div>
       <div className="w-full grid grid-cols-3 gap-4">
         {kanbanStatusColumns.map(({ label, value }: ColumnsType) => (
