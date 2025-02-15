@@ -16,8 +16,7 @@ const KanbanPage = () => {
   const [socket, setSocket] = useState<typeof Socket | null>(null);
 
   useEffect(() => {
-    // const newSocket = io(`${apiGateWayUrl}/kanban`);
-    const newSocket = io(`http://localhost:8000`, {
+    const newSocket = io(`${apiGateWayUrl}`, {
       path: "/kanban/socket.io",
     });
 
@@ -25,6 +24,11 @@ const KanbanPage = () => {
 
     // Fetch initial tasks data
     newSocket.emit("fetch-tasks");
+
+    // Get all task updates
+    newSocket.on("tasks", (tasks: TaskType[]) => {
+      setTasks(tasks);
+    });
 
     return () => {
       newSocket.disconnect();

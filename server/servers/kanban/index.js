@@ -22,11 +22,30 @@ const pool = new Pool({
   port: 5432,
 });
 
+const data = [
+  { id: 1, title: "Cooking", description: "Cooking food", status: "todo" },
+  {
+    id: 2,
+    title: "Iron",
+    description: "Iron all office clothes",
+    status: "in-progress",
+  },
+  { id: 3, title: "Clean", description: "Clean room", status: "completed" },
+  {
+    id: 4,
+    title: "Office",
+    description: "Complete office work",
+    status: "todo",
+  },
+];
+
 io.on("connection", (socket) => {
   console.log("A user connected");
 
   // fetch all tasks on connection
-  socket.on("fetch-tasks", async () => {});
+  socket.on("fetch-tasks", async () => {
+    socket.emit("tasks", data);
+  });
 
   // Add a new task
   socket.on("add-task", async () => {});
