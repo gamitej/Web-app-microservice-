@@ -1,7 +1,8 @@
 import axios from "axios";
 
+export const apiGateWayUrl = "http://localhost:8000";
 const API = axios.create({
-  baseURL: "http://localhost:8000", // API gateway
+  baseURL: apiGateWayUrl, // API gateway
   withCredentials: true,
 });
 
