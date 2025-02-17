@@ -17,6 +17,10 @@ const AddTaskModal = ({ handleAddTask }: AddTaskModalProps) => {
     () => defaultFormData
   );
 
+  /**
+   * ================== EVENT HANDLERS ===============
+   */
+
   const handleModalChange = () => {
     setIsOpen((state) => !state);
   };
