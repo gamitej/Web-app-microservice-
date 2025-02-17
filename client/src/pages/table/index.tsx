@@ -1,5 +1,14 @@
+import TableComponent from "./TableComponent";
+
 const TablePage = () => {
-  return <div>TablePage</div>;
+  /**
+   * TSX
+   */
+  return (
+    <div>
+      <TableComponent />
+    </div>
+  );
 };
 
 export default TablePage;

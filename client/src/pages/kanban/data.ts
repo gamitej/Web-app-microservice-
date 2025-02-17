@@ -32,5 +32,3 @@ export const defaultFormData = taskFormData.reduce((acc, item) => {
   acc[item.id] = "";
   return acc;
 }, {} as { [key: string]: string });
-
-// SimpleDropdown
