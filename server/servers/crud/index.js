@@ -1,19 +1,16 @@
-/**
- * Kanban Board Microservice
- */
 const http = require("http");
 const { Pool } = require("pg");
 const express = require("express");
 const { Server } = require("socket.io");
 
-// configuration
+// Configuration
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
 app.use(express.json());
 
-// database configuration
+// Database Configuration
 const pool = new Pool({
   user: "user",
   host: "postgres-master",
@@ -44,29 +41,42 @@ let rows = [
 
 let tableData = { columns, rows };
 
+// Socket.io Handling
 io.on("connection", (socket) => {
-  console.log("A user connected");
+  console.log("A user connected:", socket.id);
 
-  // fetch all tasks on connection
+  // Fetch table data
   socket.on("fetch-table", async () => {
-    socket.emit("table-data", tableData);
+    try {
+      socket.emit("table-data", tableData);
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+      socket.emit("error", "Failed to fetch table data.");
+    }
   });
 
-  // Add a new task
-  socket.on("add-row", async () => {});
-
-  // Update a task
+  // Update a row
   socket.on("update-row", async (rowIndex, key, editValue) => {
-    rows[rowIndex][key] = editValue;
-    io.emit("row-updated", rowIndex, key, editValue);
+    try {
+      if (!rows[rowIndex]) throw new Error("Row index out of bounds");
+      rows[rowIndex][key] = editValue;
+
+      // Emit the updated row
+      io.emit("row-updated", rowIndex, key, editValue);
+    } catch (error) {
+      console.error("Error updating row:", error.message);
+      socket.emit("error", "Failed to update row.");
+    }
   });
 
-  // Delete a task
-  socket.on("delete-row", async () => {});
+  // Handle errors
+  socket.on("error", (err) => {
+    console.error("Socket error:", err);
+  });
 
-  // Disconnect
+  // Handle disconnection
   socket.on("disconnect", () => {
-    console.log("A user disconnected");
+    console.log("User disconnected:", socket.id);
   });
 });
 
