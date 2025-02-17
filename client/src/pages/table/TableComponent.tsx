@@ -1,27 +1,58 @@
+import { useEffect, useState } from "react";
+import io, { Socket } from "socket.io-client";
+// components
 import GridTable from "@/components/table/GridTable";
+// data
+import { TableData } from "./type";
+// services
+import { apiGateWayUrl } from "@/apiServices/apiServer";
 
-const columns = [
-  { accessorKey: "name", headerName: "Name", width: "200px" },
-  { accessorKey: "age", headerName: "Age", width: "100px" },
-  { accessorKey: "salary", headerName: "Salary", width: "150px" },
-  { accessorKey: "gender", headerName: "Gender", width: "120px" },
-  { accessorKey: "location", headerName: "Location", width: "1fr" }, // Flexible width
-];
+const App = <T,>() => {
+  const [tableData, setTableData] = useState<TableData<T>>({
+    rows: [],
+    columns: [],
+  });
+  const [socket, setSocket] = useState<typeof Socket | null>(null);
 
-const data = [
-  { name: "Amitej", age: 22, salary: "12k", gender: "Male", location: "Delhi" },
-  { name: "John", age: 30, salary: "25k", gender: "Male", location: "Mumbai" },
-  {
-    name: "Sara",
-    age: 28,
-    salary: "20k",
-    gender: "Female",
-    location: "Bangalore",
-  },
-];
+  useEffect(() => {
+    const newSocket = io(`${apiGateWayUrl}`, { path: "/crud/socket.io" });
+    setSocket(newSocket);
 
-const App = () => {
-  return <GridTable columns={columns} data={data} />;
+    newSocket.emit("fetch-table");
+
+    newSocket.on("table-data", (data: TableData<T>) => {
+      setTableData(data);
+    });
+
+    newSocket.on(
+      "row-updated",
+      (rowIndex: number, key: string, editValue: T) => {
+        console.log({ rowIndex, key, editValue });
+
+        setTableData((table: TableData<T>) => {
+          table.rows[rowIndex][key] = editValue;
+          return { columns: table.columns, rows: table.rows };
+        });
+      }
+    );
+  }, []);
+
+  const handleEditRowData = (rowIndex: number, key: string, editValue: T) => {
+    if (socket) {
+      socket.emit("update-row", rowIndex, key, editValue);
+    }
+  };
+
+  /**
+   * TSX
+   */
+  return (
+    <GridTable
+      onSave={handleEditRowData}
+      data={tableData?.rows || []}
+      columns={tableData?.columns || []}
+    />
+  );
 };
 
 export default App;

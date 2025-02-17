@@ -1,16 +1,5 @@
 import { ReactNode, useState } from "react";
-
-interface Column {
-  width: string;
-  accessorKey: string;
-  headerName: string;
-}
-
-interface TableProps<T extends ReactNode> {
-  columns: Column[];
-  data: Record<string, T>[];
-  onSave?: (rowIndex: number, key: string, editValue: T) => void;
-}
+import { TableProps } from "./type";
 
 const GridTable = <T extends ReactNode>({
   columns,
