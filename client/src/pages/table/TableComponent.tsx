@@ -1,30 +1,27 @@
-import BasicTable from "@/components/table";
+import GridTable from "@/components/table/GridTable";
 
-const tableData = {
-  cols: [
-    { headerName: "Name", accessorKey: "name" },
-    { headerName: "Age", accessorKey: "age" },
-    { headerName: "Salary", accessorKey: "salary" },
-    { headerName: "Gender", accessorKey: "gender" },
-  ],
-  rows: [
-    { name: "Amit", age: 12, salary: "0", gender: "M" },
-    { name: "Rohan", age: 22, salary: "12k", gender: "M" },
-    { name: "Saloni", age: 27, salary: "90k", gender: "F" },
-    { name: "Neha", age: 25, salary: "45k", gender: "F" },
-    { name: "Amar", age: 32, salary: "132k", gender: "M" },
-  ],
+const columns = [
+  { accessorKey: "name", headerName: "Name", width: "200px" },
+  { accessorKey: "age", headerName: "Age", width: "100px" },
+  { accessorKey: "salary", headerName: "Salary", width: "150px" },
+  { accessorKey: "gender", headerName: "Gender", width: "120px" },
+  { accessorKey: "location", headerName: "Location", width: "1fr" }, // Flexible width
+];
+
+const data = [
+  { name: "Amitej", age: 22, salary: "12k", gender: "Male", location: "Delhi" },
+  { name: "John", age: 30, salary: "25k", gender: "Male", location: "Mumbai" },
+  {
+    name: "Sara",
+    age: 28,
+    salary: "20k",
+    gender: "Female",
+    location: "Bangalore",
+  },
+];
+
+const App = () => {
+  return <GridTable columns={columns} data={data} />;
 };
 
-const TableComponent = () => {
-  /**
-   * TSX
-   */
-  return (
-    <div className="w-full h-[80vh] flex justify-center items-center">
-      <BasicTable tableData={tableData} />
-    </div>
-  );
-};
-
-export default TableComponent;
+export default App;
