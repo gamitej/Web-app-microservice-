@@ -1,42 +1,42 @@
-import React, { useState } from "react";
+import { ReactNode, useState } from "react";
 
 interface Column {
+  width: string;
   accessorKey: string;
   headerName: string;
-  width: string;
 }
 
-interface TableProps {
+interface TableProps<T extends ReactNode> {
   columns: Column[];
-  data: Record<string, any>[];
+  data: Record<string, T>[];
+  onSave?: (rowIndex: number, key: string, editValue: T) => void;
 }
 
-const GridTable: React.FC<TableProps> = ({ columns, data }) => {
-  const [tableData, setTableData] = useState(data);
+const GridTable = <T extends ReactNode>({
+  columns,
+  data,
+  onSave,
+}: TableProps<T>) => {
   const [editingCell, setEditingCell] = useState<{
     rowIndex: number;
     key: string;
   } | null>(null);
-  const [editValue, setEditValue] = useState("");
+  const [editValue, setEditValue] = useState<T | null>(null);
 
-  const handleEdit = (rowIndex: number, key: string, value: string) => {
+  const handleEdit = (rowIndex: number, key: string, value: T) => {
     setEditingCell({ rowIndex, key });
     setEditValue(value);
   };
 
   const handleSave = () => {
-    if (editingCell) {
+    if (editingCell && editValue !== null) {
       const { rowIndex, key } = editingCell;
-      const updatedData = [...tableData];
-      updatedData[rowIndex][key] = editValue;
-      setTableData(updatedData);
+      if (onSave) onSave(rowIndex, key, editValue);
       setEditingCell(null);
+      setEditValue(null);
     }
   };
 
-  /**
-   * TSX
-   */
   return (
     <div className="w-full overflow-auto">
       <div
@@ -56,7 +56,7 @@ const GridTable: React.FC<TableProps> = ({ columns, data }) => {
         ))}
 
         {/* Data Rows */}
-        {tableData.map((row, rowIndex) =>
+        {data.map((row, rowIndex) =>
           columns.map((column) => (
             <div
               key={`${rowIndex}-${column.accessorKey}`}
@@ -74,10 +74,11 @@ const GridTable: React.FC<TableProps> = ({ columns, data }) => {
                 <input
                   type="text"
                   autoFocus
-                  value={editValue}
+                  value={String(editValue ?? "")}
+                  spellCheck={false}
                   onBlur={handleSave}
                   className="border p-1 w-full text-center"
-                  onChange={(e) => setEditValue(e.target.value)}
+                  onChange={(e) => setEditValue(e.target.value as T)}
                 />
               ) : (
                 row[column.accessorKey]
