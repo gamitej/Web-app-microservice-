@@ -41,6 +41,7 @@ const AddTaskModal = ({ handleAddTask }: AddTaskModalProps) => {
     e.preventDefault();
     handleAddTask({ id: Date.now().toString(), ...formData } as TaskType);
     handleModalChange();
+    setFormData(defaultFormData);
   };
   /**
    * TSX
