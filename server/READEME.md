@@ -6,3 +6,45 @@
 ✅ PostgreSQL with Sequelize ORM
 ✅ Logging (Winston) & Testing (Jest)
 ✅ Docker support
+
+### Setup & Run
+
+1. Install dependencies - ( cd/server )
+
+```
+npm install
+```
+
+2. Start Api Gateway
+
+```
+cd api-gateway
+```
+
+- Api Gateway will run on port 8000
+
+```
+node index.js
+```
+
+3. Start services
+
+- CRUD table service
+
+```
+cd/servers/crud
+```
+
+```
+node index.js
+```
+
+- kanban service
+
+```
+cd/servers/kanban
+```
+
+```
+node index.js
+```
